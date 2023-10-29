@@ -34,24 +34,31 @@ public class RedisRepository : IRedisRepository
 
   public async Task AddPostAsync(Post post)
   {
-    var postsJson = await _redis.ListRangeAsync("posts");
+    var posts = await GetAllPosts();
 
-    var posts = postsJson.Select(p => JsonSerializer.Deserialize<Post>(p!)).ToList();
-    
-    if (posts is null || posts.Count == 0)
+    if (posts.Count == 0)
     {
-      await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(post));
-      return;
+        await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(post));
+        return;
     }
 
-    posts.Add(post);
-    posts = ReIndexPosts(posts);
+    var updatedPosts = new List<Post>(posts!);
+    updatedPosts.Add(post);
+
+    var reIndexedPosts = ReIndexPosts(updatedPosts.ToArray());
+    updatedPosts = reIndexedPosts?.ToList() ?? posts!;
+
+    if (updatedPosts is null)
+    {
+      _logger.LogWarning("Posts not found in Redis");
+      return;
+    }
 
     // Delete all posts
     await _redis.KeyDeleteAsync("posts");
 
     // Add all posts
-    foreach (var p in posts)
+    foreach (var p in updatedPosts)
     {
       await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(p));
     }
@@ -59,10 +66,15 @@ public class RedisRepository : IRedisRepository
 
   public async Task UpdatePostAsync(Post post)
   {
-    var postsJson = await _redis.ListRangeAsync("posts");
-    var posts = postsJson.Select(p => JsonSerializer.Deserialize<Post>(p!)).ToList();
+    var posts = await GetAllPosts();
 
-    var postToUpdate = posts.FirstOrDefault(p => p.Id == post.Id);
+    if (posts.Count == 0)
+    {
+      _logger.LogWarning("Posts not found in Redis");
+      return;
+    }
+
+    var postToUpdate = posts.FirstOrDefault(p => p!.Id == post.Id);
 
     if (postToUpdate is null)
     {
@@ -77,7 +89,6 @@ public class RedisRepository : IRedisRepository
     // Delete all posts 
     await _redis.KeyDeleteAsync("posts");
 
-    // Add all posts 
     foreach (var p in posts)
     {
       await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(p));
@@ -86,10 +97,15 @@ public class RedisRepository : IRedisRepository
 
   public async Task DeletePostAsync(int id)
   {
-    var postsJson = await _redis.ListRangeAsync("posts");
-    var posts = postsJson.Select(p => JsonSerializer.Deserialize<Post>(p!)).ToList();
+    var posts = await GetAllPosts();
 
-    var postToDelete = posts.FirstOrDefault(p => p.Id == id);
+    if (posts.Count == 0)
+    {
+      _logger.LogWarning("Posts not found in Redis");
+      return;
+    }
+
+    var postToDelete = posts.FirstOrDefault(p => p!.Id == id);
 
     if (postToDelete is null)
     {
@@ -97,28 +113,55 @@ public class RedisRepository : IRedisRepository
       return;
     }
     
-    posts.Remove(postToDelete);
-    
-    posts = ReIndexPosts(posts);
+    var updatedPosts = new List<Post>(posts!);
 
-    // Delete all posts 
+    updatedPosts.Remove(postToDelete);
+
+    var reIndexedPosts = ReIndexPosts(updatedPosts.ToArray()!);
+
+    updatedPosts = ReIndexPosts(updatedPosts!).ToList() ?? posts!;
+
     await _redis.KeyDeleteAsync("posts");
 
     // Add all posts 
-    foreach (var p in posts)
+    foreach (var p in updatedPosts)
     {
       await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(p));
     }
   }
 
-  private List<Post> ReIndexPosts(List<Post> posts)
+  private async Task<List<Post?>> GetAllPosts()
   {
-    for (var i = 0; i < posts.Count; i++)
+    var postsJson = await _redis.ListRangeAsync("posts");
+    
+    var posts = postsJson
+        .Select(p => {
+            try
+            {
+                return JsonSerializer.Deserialize<Post>(p!);
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Failed to deserialize post");
+                return null;
+            }
+        })
+        .Where(p => p != null)
+        .ToList();
+
+    return posts!;
+  }
+
+  private IEnumerable<Post> ReIndexPosts(IEnumerable<Post> posts)
+  {    
+    var postsList = new List<Post>(posts);
+
+    for (var i = 0; i < postsList.Count; i++)
     {
-      posts[i].Id = posts.Count - i;
+      postsList[i].Id = postsList.Count - i;
     }
 
-    return posts;
+    return postsList;
   }
 }
 
