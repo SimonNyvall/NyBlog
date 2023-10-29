@@ -34,9 +34,47 @@ public class RedisRepository : IRedisRepository
 
   public async Task AddPostAsync(Post post)
   {
-    await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(post));
+    var postsJson = await _redis.ListRangeAsync("posts");
 
-    _logger.LogInformation("Post added to Redis");
+    var posts = postsJson.Select(p => JsonSerializer.Deserialize<Post>(p!)).ToList();
+    
+    if (posts is null || posts.Count == 0)
+    {
+      await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(post));
+      return;
+    }
+
+    posts.Add(post);
+    posts = ReIndexPosts(posts);
+
+    // Delete all posts
+    await _redis.KeyDeleteAsync("posts");
+
+    // Add all posts
+    foreach (var p in posts)
+    {
+      await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(p));
+    }
+  }
+
+  private List<Post> ReIndexPosts(List<Post> posts)
+  {
+    for (var i = 0; i < posts.Count; i++)
+    {
+      posts[i].Id = posts.Count - i;
+    }
+
+    return posts;
+  }
+
+  public async Task UpdatePostAsync(Post post)
+  {
+    throw new NotImplementedException();
+  }
+
+  public async Task DeletePostAsync(string id)
+  {
+    throw new NotImplementedException();
   }
 }
 

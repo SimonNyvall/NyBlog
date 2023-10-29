@@ -15,6 +15,19 @@ public class PostService : IPostService
     _logger = logger;
   }
 
+  public async Task<IResult> GetAllPostsAsync()
+  {
+    _logger.LogInformation("Getting all posts");
+
+    var posts = await _repository.GetAllPostsAsync();
+
+    _logger.LogInformation("Found {Count} posts", posts.Length);
+
+    if (posts.Length == 0) return TypedResults.NoContent();
+
+    return TypedResults.Ok(posts);
+  }
+
   public async Task<IResult> GetNewestPostAsync()
   {
     _logger.LogInformation("Getting newest post");
@@ -64,7 +77,12 @@ public class PostService : IPostService
 
     var numberOfPosts = posts.Length;
 
-    var post = new Post(numberOfPosts + 1, DateTime.Now, content);
+    var post = new Post
+    {
+      Id = numberOfPosts + 1,
+      CreatedAt = DateTime.Now,
+      Content = content
+    };
 
     await _repository.AddPostAsync(post);
 

@@ -12,7 +12,9 @@ public static class PostEndpoint
 
   public static WebApplication MapPostEndpoint(this WebApplication app)
   {
-    app.MapGet("/api/posts", (IPostService postService) => postService.GetNewestPostAsync());
+    app.MapGet("/api/posts", (IPostService PostService) => PostService.GetAllPostsAsync());
+
+    app.MapGet("/api/posts/new", (IPostService postService) => postService.GetNewestPostAsync());
 
     app.MapGet("/api/posts/{id}", (IPostService postService, int postId) => postService.GetPostById(postId));
 

@@ -1,3 +1,8 @@
 namespace backend.Models;
 
-public record Post(int Id, DateTime CreatedAt, string Content);
+public class Post
+{
+  public int Id { get; set; }
+  public DateTime CreatedAt { get; set; }
+  public string Content { get; set; } = string.Empty;
+}

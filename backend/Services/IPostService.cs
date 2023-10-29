@@ -2,6 +2,8 @@ namespace backend.Service;
 
 public interface IPostService
 {
+  Task<IResult> GetAllPostsAsync();
+
   Task<IResult> GetNewestPostAsync();
 
   Task<IResult> GetPostById(int postId);
