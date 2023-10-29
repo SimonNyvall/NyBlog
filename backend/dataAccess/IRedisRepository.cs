@@ -10,5 +10,5 @@ public interface IRedisRepository
 
   Task UpdatePostAsync(Post post);
 
-  Task DeletePostAsync(string id);
+  Task DeletePostAsync(int id);
 }

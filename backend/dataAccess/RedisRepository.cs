@@ -57,6 +57,60 @@ public class RedisRepository : IRedisRepository
     }
   }
 
+  public async Task UpdatePostAsync(Post post)
+  {
+    var postsJson = await _redis.ListRangeAsync("posts");
+    var posts = postsJson.Select(p => JsonSerializer.Deserialize<Post>(p!)).ToList();
+
+    var postToUpdate = posts.FirstOrDefault(p => p.Id == post.Id);
+
+    if (postToUpdate is null)
+    {
+      _logger.LogWarning("Post not found in Redis");
+      return;
+    }
+    
+    posts.Remove(postToUpdate);
+    
+    posts.Insert(postToUpdate.Id - 1, post);
+
+    // Delete all posts 
+    await _redis.KeyDeleteAsync("posts");
+
+    // Add all posts 
+    foreach (var p in posts)
+    {
+      await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(p));
+    }
+  }
+
+  public async Task DeletePostAsync(int id)
+  {
+    var postsJson = await _redis.ListRangeAsync("posts");
+    var posts = postsJson.Select(p => JsonSerializer.Deserialize<Post>(p!)).ToList();
+
+    var postToDelete = posts.FirstOrDefault(p => p.Id == id);
+
+    if (postToDelete is null)
+    {
+      _logger.LogWarning("Post not found in Redis");
+      return;
+    }
+    
+    posts.Remove(postToDelete);
+    
+    posts = ReIndexPosts(posts);
+
+    // Delete all posts 
+    await _redis.KeyDeleteAsync("posts");
+
+    // Add all posts 
+    foreach (var p in posts)
+    {
+      await _redis.ListRightPushAsync("posts", JsonSerializer.Serialize(p));
+    }
+  }
+
   private List<Post> ReIndexPosts(List<Post> posts)
   {
     for (var i = 0; i < posts.Count; i++)
@@ -65,16 +119,6 @@ public class RedisRepository : IRedisRepository
     }
 
     return posts;
-  }
-
-  public async Task UpdatePostAsync(Post post)
-  {
-    throw new NotImplementedException();
-  }
-
-  public async Task DeletePostAsync(string id)
-  {
-    throw new NotImplementedException();
   }
 }
 

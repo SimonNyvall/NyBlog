@@ -91,11 +91,26 @@ public class PostService : IPostService
 
   public async Task<IResult> UpdatePostAsync(int id, string content)
   {
-    throw new NotImplementedException();
+    var post = new Post
+    {
+      Id = id,
+      CreatedAt = DateTime.Now,
+      Content = content
+    };
+
+    await _repository.UpdatePostAsync(post);
+
+    _logger.LogInformation("Updated post with id {Id}", id);
+
+    return TypedResults.Ok(post);
   }
 
   public async Task<IResult> DeletePostAsync(int id)
   {
-    throw new NotImplementedException();
+    await _repository.DeletePostAsync(id);
+
+    _logger.LogInformation("Deleted post with id {Id}", id);
+
+    return TypedResults.Ok();
   }
 }
