@@ -2,6 +2,6 @@ module Backend.Models.Post
 
 type Post = {
   Title: string
-  Content: string
+  HTMLContent: string
   CreatedAt: System.DateTime
 }
