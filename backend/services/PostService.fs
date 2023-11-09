@@ -6,13 +6,23 @@ open Markdig
 
 open Backend.Models.Post
 
+let private parseMarkdwonToHTML (markdown: string): string =
+  $"""
+  <hr>
+  {markdown |> Markdown.ToHtml}
+  <button class="next-post-btn" id="next-post-btn" hx-get="" hx-trigger="click" hx-swap="outerHTML">
+    Read next post!
+  </button>
+  """
+
+
 let private parseAllMarkdownFromPostsDirectory (): Post list =
   let dirInfo = DirectoryInfo "posts/"
   let files = dirInfo.GetFiles("*.md")
   
   let posts = 
     files |> Array.map (fun file ->
-      let content = File.ReadAllText(file.FullName) |> Markdown.ToHtml 
+      let content = File.ReadAllText(file.FullName) |> parseMarkdwonToHTML
       { Title = file.Name; HTMLContent = content; CreatedAt = file.CreationTime }
   )
 

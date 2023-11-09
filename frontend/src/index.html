@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script defer src="ts/script.ts"></script>
-    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-tomorrow.min.css">
+
+    <script defer src="dist/script.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.8"></script>
 </head>
 <body>
 
@@ -20,6 +22,12 @@
         <a href="#" class="right-link">Github</a>
         <a href="#" class="right-link">LinkedIn</a>
       </div>
+    </div>
+  </div>
+  
+  <div class="wrapper">
+    <div hx-get="http://localhost:5021/api/posts/" hx-trigger="load" hx-swap="outerHTML">
+      Post
     </div>
   </div>
 
