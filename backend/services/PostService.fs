@@ -55,6 +55,7 @@ let getPreviousPostHTMLContent (indentifer: int): string =
 
     getMarkdwonToHTML post (indentifer + 1)
   else
+    Log.Error("No post found with indentifer: {0}", indentifer)
     "404: Page not found"
 
 
