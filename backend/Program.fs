@@ -4,6 +4,7 @@ open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Backend.Endpoints.PostEndpoint
+open Serilog
 
 [<AutoOpen>]
 
@@ -32,6 +33,13 @@ module Program =
               .AllowAnyHeader() |> ignore
           )
         ) |> ignore
+        
+        let seqUrl = builder.Configuration["SeqUrl"]
+
+        Log.Logger <- LoggerConfiguration()
+          .WriteTo.Seq(seqUrl)
+          .WriteTo.Console()
+          .CreateLogger()
 
         let app = builder.Build()
 

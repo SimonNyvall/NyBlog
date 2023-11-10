@@ -1,10 +1,9 @@
 module Backend.Services.PostService
 
 open System.IO
-
 open Markdig
-
 open Backend.Models.Post
+open Serilog
 
 let private getMarkdwonToHTML (markdown: string) (index: int): string =
   $"""
@@ -30,6 +29,8 @@ let private parseAllMarkdownFromPostsDirectory (): Post list =
 
 
 let getLatestPostHTMLContent (): string =
+  Log.Information("Getting latest post")
+
   let latestPost = 
     parseAllMarkdownFromPostsDirectory ()
     |> List.sortByDescending (fun post -> post.CreatedAt)
@@ -39,6 +40,8 @@ let getLatestPostHTMLContent (): string =
 
 
 let getPreviousPostHTMLContent (indentifer: int): string =
+  Log.Information("Getting previous post with indentifer: {0}", indentifer)
+
   let sortedPosts = 
     parseAllMarkdownFromPostsDirectory ()
     |> List.sortByDescending (fun post -> post.CreatedAt)
