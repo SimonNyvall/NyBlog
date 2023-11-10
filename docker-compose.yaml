@@ -8,25 +8,21 @@ services:
   server:
     image: simonnyvall/backend:1.0
     depends_on:
-      - "redis"
-    container_name: server_container
+      - "seq"
+    container_name: backend_nyblog
     ports:
       - "8080:80"
     build:
       context: .
       dockerfile: backend/Dockerfile
-    environment:
-      - Redis=redis_db:6379
     networks:
       - dev
 
-  redis:
-    image: redis:latest
-    container_name: redis_db
-    restart: always
+  seq:
+    image: datalust/seq:latest
     ports:
-      - "6379:6379"
-    networks:
-      - dev
+      - 5341:5341
+    environment:
+      ACCEPT_EULA: Y
 volumes:
   app_data:
