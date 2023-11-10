@@ -6,11 +6,11 @@ open Markdig
 
 open Backend.Models.Post
 
-let private parseMarkdwonToHTML (markdown: string): string =
+let private getMarkdwonToHTML (markdown: string) (index: int): string =
   $"""
   <hr>
   {markdown |> Markdown.ToHtml}
-  <button class="next-post-btn" id="next-post-btn" hx-get="" hx-trigger="click" hx-swap="outerHTML">
+  <button class="next-post-btn" hx-get="http://localhost:5021/api/posts/{index}" hx-trigger="click" hx-swap="outerHTML">
     Read next post!
   </button>
   """
@@ -22,7 +22,7 @@ let private parseAllMarkdownFromPostsDirectory (): Post list =
   
   let posts = 
     files |> Array.map (fun file ->
-      let content = File.ReadAllText(file.FullName) |> parseMarkdwonToHTML
+      let content = File.ReadAllText(file.FullName)
       { Title = file.Name; HTMLContent = content; CreatedAt = file.CreationTime }
   )
 
@@ -30,10 +30,12 @@ let private parseAllMarkdownFromPostsDirectory (): Post list =
 
 
 let getLatestPostHTMLContent (): string =
-  parseAllMarkdownFromPostsDirectory ()
-  |> List.sortByDescending (fun post -> post.CreatedAt)
-  |> List.head 
-  |> fun post -> post.HTMLContent
+  let latestPost = 
+    parseAllMarkdownFromPostsDirectory ()
+    |> List.sortByDescending (fun post -> post.CreatedAt)
+    |> List.head 
+    |> fun post -> post.HTMLContent
+  getMarkdwonToHTML latestPost 1
 
 
 let getPreviousPostHTMLContent (indentifer: int): string =
@@ -42,10 +44,13 @@ let getPreviousPostHTMLContent (indentifer: int): string =
     |> List.sortByDescending (fun post -> post.CreatedAt)
   
   if indentifer < List.length sortedPosts && indentifer > 0 then
-    sortedPosts 
-    |> List.skip indentifer 
-    |> List.head 
-    |> fun post -> post.HTMLContent
+    let post = 
+      sortedPosts 
+      |> List.skip indentifer 
+      |> List.head 
+      |> fun post -> post.HTMLContent
+
+    getMarkdwonToHTML post (indentifer + 1)
   else
     "404: Page not found"
 
