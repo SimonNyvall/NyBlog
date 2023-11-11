@@ -15,14 +15,26 @@ let private getMarkdwonToHTML (markdown: string) (index: int): string =
   """
 
 
-let private parseAllMarkdownFromPostsDirectory (): Post list =
-  let dirInfo = DirectoryInfo "posts/"
-  let files = dirInfo.GetFiles("*.md")
-  
+let private parseAllMarkdownFromPostsDirectory (): Post list =  
+  let dirInfo =
+    try
+      let content = DirectoryInfo "posts/"
+      Some content
+    with
+      | ex -> 
+        Log.Error("Error while reading posts directory: {0}", ex.Message)
+        None
+        
+  let files =
+    match dirInfo with
+    | Some dir -> dir.GetFiles("*.md")
+    | None -> [||]
+
+
   let posts = 
     files |> Array.map (fun file ->
       let content = File.ReadAllText(file.FullName)
-      { Title = file.Name; HTMLContent = content; CreatedAt = file.CreationTime }
+      { Title = file.Name; MdContent = content; CreatedAt = file.CreationTime }
   )
 
   posts |> Array.toList
@@ -31,11 +43,18 @@ let private parseAllMarkdownFromPostsDirectory (): Post list =
 let getLatestPostHTMLContent (): string =
   Log.Information("Getting latest post")
 
-  let latestPost = 
-    parseAllMarkdownFromPostsDirectory ()
-    |> List.sortByDescending (fun post -> post.CreatedAt)
-    |> List.head 
-    |> fun post -> post.HTMLContent
+  let latestPost =
+    let posts = parseAllMarkdownFromPostsDirectory ()
+    
+    if List.length posts > 0 then
+      posts
+      |> List.sortByDescending (fun post -> post.CreatedAt)
+      |> List.head 
+      |> fun post -> post.MdContent 
+    else
+      Log.Warning("No posts found")
+      "204: No content"
+
   getMarkdwonToHTML latestPost 1
 
 
@@ -43,7 +62,7 @@ let getPreviousPostHTMLContent (indentifer: int): string =
   Log.Information("Getting previous post with indentifer: {0}", indentifer)
 
   let sortedPosts = 
-    parseAllMarkdownFromPostsDirectory ()
+    parseAllMarkdownFromPostsDirectory () 
     |> List.sortByDescending (fun post -> post.CreatedAt)
   
   if indentifer < List.length sortedPosts && indentifer > 0 then
@@ -51,7 +70,7 @@ let getPreviousPostHTMLContent (indentifer: int): string =
       sortedPosts 
       |> List.skip indentifer 
       |> List.head 
-      |> fun post -> post.HTMLContent
+      |> fun post -> post.MdContent
 
     getMarkdwonToHTML post (indentifer + 1)
   else
@@ -62,7 +81,7 @@ let getPreviousPostHTMLContent (indentifer: int): string =
 let getAllPostTitlesAsHTMLUl (): string =
  $"""
   <ul>
-    { parseAllMarkdownFromPostsDirectory ()
+    { parseAllMarkdownFromPostsDirectory () 
       |> List.map (fun post -> $"<li>{ post.Title.Substring(0, post.Title.Length - 3) }</li>")
       |> String.concat "\n"
     }
