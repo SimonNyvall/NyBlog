@@ -5,6 +5,7 @@ open Xunit
 open Backend.Services.PostService
 open Backend.Abstractions.FileSystem
 open Foq
+open Microsoft.Extensions.Logging
 
 
 [<Fact>]
@@ -17,7 +18,9 @@ let ``getLatestPostHTMLContent returns string`` () =
   mockFileSystem.Setup(fun x -> <@ x.DirectoryInfo "posts/" @>).Returns(mockDirectoryInfo) |> ignore
   mockFileSystem.Setup(fun x -> <@ x.ReadAllText "file1.md" @>).Returns("mock file content") |> ignore
 
-  let service = PostService (mockFileSystem.Create())
+  let mockLogger = Mock<ILogger<PostService>>()
+
+  let service = PostService (mockFileSystem.Create(), mockLogger.Create())
 
   // Act
   let result = service.getLatestPostHTMLContent()
@@ -35,7 +38,9 @@ let ``getPreviousPostHTMLContent returns string`` () =
   mockFileSystem.Setup(fun x -> <@ x.DirectoryInfo "posts/" @>).Returns(mockDirectoryInfo) |> ignore
   mockFileSystem.Setup(fun x -> <@ x.ReadAllText "file1.md" @>).Returns("mock file content") |> ignore
 
-  let service = PostService (mockFileSystem.Create())
+  let mockLogger = Mock<ILogger<PostService>>()
+
+  let service = PostService (mockFileSystem.Create(), mockLogger.Create())
 
   // Act
   let result = service.getPreviousPostHTMLContent 1
