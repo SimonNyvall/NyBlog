@@ -22,7 +22,8 @@ type PostService (fileSystem: IFileSystem) =
     <button class="next-post-btn" hx-get="http://localhost:5021/api/posts/{index}" hx-trigger="click" hx-swap="outerHTML">
       Read next post!
     </button>
-    """
+    """.Trim()
+    
 
 
   let parseAllMarkdownFromPostsDirectory (): Post list =  
@@ -32,13 +33,18 @@ type PostService (fileSystem: IFileSystem) =
         Some info
       with
         | ex -> 
-          Log.Error("Error while reading posts directory: {0}", ex.Message)
+          Log.Error("Error while reading posts directory: {errorMessage}", ex.Message)
           None
     
     let files = 
       match dirInfo with
       | Some info ->
-        info.GetFiles "*.md"
+        try
+          info.GetFiles "*.md"
+        with
+          | ex ->
+            Log.Error("Error while reading directory content: {errorMessage}", ex.Message)
+            [||]
 
       | None -> [||]
 

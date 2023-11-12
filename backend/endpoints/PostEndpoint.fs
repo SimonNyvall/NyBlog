@@ -23,5 +23,4 @@ let usePostEndpoint (app: WebApplication): WebApplication =
     postService.getAllPostTitlesAsHTMLUl()
   )) |> ignore
 
-
   app
