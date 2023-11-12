@@ -5,6 +5,8 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Backend.Endpoints.PostEndpoint
 open Serilog
+open Backend.Abstractions.FileSystem
+open Backend.Services.PostService
 
 [<AutoOpen>]
 
@@ -22,6 +24,9 @@ module Program =
         let builder = WebApplication.CreateBuilder(args)
 
         builder.Services.AddControllers()
+        
+        builder.Services.AddScoped<IFileSystem, FileSystem>()
+        builder.Services.AddScoped<PostService>()
 
         builder.Services.AddCors(fun options -> 
           let frontendOrigin = builder.Configuration["AllowedOrigins:Frontend"]
