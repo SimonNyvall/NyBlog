@@ -14,8 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.33.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
-    <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.3" />
+    <PackageReference Include="Seq.Extensions.Logging" Version="6.1.0" />
   </ItemGroup>
 
 </Project>

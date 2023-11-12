@@ -4,13 +4,23 @@ open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Backend.Endpoints.PostEndpoint
-open Serilog
 open Backend.Abstractions.FileSystem
 open Backend.Services.PostService
+open Microsoft.Extensions.Logging
 
 [<AutoOpen>]
 
 module Program =
+    let setupSeqLogging (builder: WebApplicationBuilder): WebApplicationBuilder =
+      
+      let seqUrl = builder.Configuration["SeqUrl"]
+
+      builder.Services.AddLogging(fun loggingBuilder -> 
+        loggingBuilder.AddSeq seqUrl |> ignore
+      )      
+
+      builder
+
     let setupEndpoints (app: WebApplication): WebApplication =
       app |> usePostEndpoint 
 
@@ -39,12 +49,7 @@ module Program =
           )
         ) |> ignore
         
-        let seqUrl = builder.Configuration["SeqUrl"]
-
-        Log.Logger <- LoggerConfiguration()
-          .WriteTo.Seq(seqUrl)
-          .WriteTo.Console()
-          .CreateLogger()
+        setupSeqLogging builder 
 
         let app = builder.Build()
 

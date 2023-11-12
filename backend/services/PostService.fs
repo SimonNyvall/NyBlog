@@ -2,8 +2,8 @@ module Backend.Services.PostService
 
 open Markdig
 open Backend.Models.Post
-open Serilog
 open Backend.Abstractions.FileSystem
+open Microsoft.Extensions.Logging
 
 
 type FileSystem () =
@@ -13,7 +13,7 @@ type FileSystem () =
     member _.ReadAllText path = System.IO.File.ReadAllText(path) 
 
 
-type PostService (fileSystem: IFileSystem) =
+type PostService (fileSystem: IFileSystem, logger: ILogger<PostService>) =
 
   let getMarkdwonToHTML (markdown: string) (index: int): string =
     $"""
@@ -33,7 +33,7 @@ type PostService (fileSystem: IFileSystem) =
         Some info
       with
         | ex -> 
-          Log.Error("Error while reading posts directory: {errorMessage}", ex.Message)
+          logger.LogError("Error while reading directory metadata: {errorMessage}", ex.Message)
           None
     
     let files = 
@@ -43,7 +43,7 @@ type PostService (fileSystem: IFileSystem) =
           info.GetFiles "*.md"
         with
           | ex ->
-            Log.Error("Error while reading directory content: {errorMessage}", ex.Message)
+            logger.LogError("Error while reading directory files: {errorMessage}", ex.Message)
             [||]
 
       | None -> [||]
@@ -58,7 +58,7 @@ type PostService (fileSystem: IFileSystem) =
 
 
   member _.getLatestPostHTMLContent (): string =
-    Log.Information("Getting latest post")
+    logger.LogInformation("Getting latest post")
 
     let latestPost =
       let posts = parseAllMarkdownFromPostsDirectory ()
@@ -69,14 +69,14 @@ type PostService (fileSystem: IFileSystem) =
         |> List.head 
         |> fun post -> post.MdContent 
       else
-        Log.Warning("No posts found")
+        logger.LogWarning("No posts found")
         "204: No content"
 
     getMarkdwonToHTML latestPost 1
 
 
   member _.getPreviousPostHTMLContent (indentifer: int): string =
-    Log.Information("Getting previous post with indentifer: {0}", indentifer)
+    logger.LogInformation("Getting previous post with indentifer: {indentifer}", indentifer)
 
     let sortedPosts = 
       parseAllMarkdownFromPostsDirectory () 
@@ -91,7 +91,7 @@ type PostService (fileSystem: IFileSystem) =
 
       getMarkdwonToHTML post (indentifer + 1)
     else
-      Log.Error("No post found with indentifer: {0}", indentifer)
+      logger.LogInformation("No post found with indentifer: {indentifer}", indentifer)
       "404: Page not found"
 
 
