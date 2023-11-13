@@ -8,6 +8,7 @@ open Backend.Extensions.Logging.SeqLoggingExtension
 open Backend.Extensions.Origin.FrontendOriginExtension
 open Backend.Abstractions.FileSystem
 open Backend.Services.PostService
+open Backend.Repositories.PostRepository
 
 [<AutoOpen>]
 
@@ -22,6 +23,7 @@ module Program =
         builder.Services.AddControllers()
         
         builder.Services.AddScoped<IFileSystem, FileSystem>()
+        builder.Services.AddScoped<PostRepository>()
         builder.Services.AddScoped<PostService>()
 
         builder |> useFrontendOrigin
