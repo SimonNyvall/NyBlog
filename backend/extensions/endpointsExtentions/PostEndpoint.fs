@@ -1,4 +1,4 @@
-module Backend.Endpoints.PostEndpoint
+module Backend.Extensions.Endpoints.PostEndpoint
 
 open System
 open Microsoft.AspNetCore.Builder
