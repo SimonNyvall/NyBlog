@@ -4,13 +4,14 @@ open Markdig
 open Backend.Models.Post
 open Backend.Abstractions.FileSystem
 open Microsoft.Extensions.Logging
-
+open System.Threading.Tasks
+open FSharp.Control
 
 type FileSystem () =
   interface IFileSystem with
     member _.GetFiles path = System.IO.Directory.GetFiles(path)
     member _.DirectoryInfo path = System.IO.DirectoryInfo(path)
-    member _.ReadAllText path = System.IO.File.ReadAllText(path) 
+    member _.ReadAllTextAsync path = System.IO.File.ReadAllTextAsync(path) 
 
 
 type PostService (fileSystem: IFileSystem, logger: ILogger<PostService>) =
@@ -27,35 +28,43 @@ type PostService (fileSystem: IFileSystem, logger: ILogger<PostService>) =
 
 
   let parseAllMarkdownFromPostsDirectory (): Post list =  
-    let dirInfo =
-      try
-        let info = fileSystem.DirectoryInfo "posts/"
-        Some info
-      with
-        | ex -> 
-          logger.LogError("Error while reading directory metadata: {errorMessage}", ex.Message)
-          None
-    
-    let files = 
-      match dirInfo with
-      | Some info ->
+    async {
+      let dirInfo =
         try
-          info.GetFiles "*.md"
+          Some (fileSystem.DirectoryInfo "posts/")
         with
-          | ex ->
-            logger.LogError("Error while reading directory files: {errorMessage}", ex.Message)
-            [||]
+          | ex -> 
+            logger.LogError("Error while reading directory metadata: {errorMessage}", ex.Message)
+            None
+    
+      let files: Async<System.IO.FileInfo array> = 
+        match dirInfo with
+        | Some info ->
+            try
+              Task.Run(fun () ->
+                info.GetFiles "*.md"
+              ) |> Async.AwaitTask
+            with
+              | ex -> 
+                logger.LogError("Error while reading files from directory: {errorMessage}", ex.Message)
+                Async.AwaitTask (Task.FromResult [||])
 
-      | None -> [||]
+        | None -> Async.AwaitTask (Task.FromResult [||])
 
-    let posts =
-      files |> Array.map (fun file -> 
-        let content = fileSystem.ReadAllText file.FullName
-        { Title = file.Name; MdContent = content; CreatedAt = file.CreationTime }
-    )
+      let! fileArray = files
 
-    posts |> Array.toList
+      let fileArrayMap =
+        fileArray
+        |> Array.map (fun file -> async { 
+          let! content = fileSystem.ReadAllTextAsync (file.FullName) |> Async.AwaitTask
+          return { Title = file.Name; MdContent = content; CreatedAt = file.CreationTime }
+        })
+        |> Async.Parallel
 
+      let! posts = fileArrayMap
+      return posts |> Array.toList
+    }
+    |> Async.RunSynchronously 
 
   member _.getLatestPostHTMLContent (): string =
     logger.LogInformation("Getting latest post")
