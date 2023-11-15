@@ -3,9 +3,9 @@ module Backend.Services.PostService
 open Markdig
 open Backend.Models.Post
 open Microsoft.Extensions.Logging
-open Backend.Repositories.PostRepository
+open Backend.Abstractions.PostRepository
 
-type PostService (repository: PostRepository, logger: ILogger<PostService>) =
+type PostService (repository: IPostRepository, logger: ILogger<PostService>) =
 
   let getMarkdwonToHTML (markdown: string) (index: int): string =
     $"""

@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Include="models/Post.fs" />
     <Compile Include="abstractions/IFileSystem.fs" />
+    <Compile Include="abstractions/IPostRepository.fs" />
     <Compile Include="repositorys/PostRepository.fs" />
     <Compile Include="services/PostService.fs" />
     <Compile Include="extensions/endpointsExtentions/PostEndpoint.fs" />

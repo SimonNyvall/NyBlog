@@ -1,57 +1,52 @@
 module Tests
 
-open System.IO
+open System
 open Xunit
 open Backend.Services.PostService
-open Backend.Abstractions.FileSystem
 open Foq
 open Microsoft.Extensions.Logging
-open Backend.Repositories.PostRepository
+open Backend.Models.Post
+open Backend.Abstractions.PostRepository
 
 [<Fact>]
-let ``getLatestPostHTMLContent returns string`` () =
+let ``getLatestPostHTMLContent should return string when no input`` () =
   // Arrange
-  (*
-  let mockFileSystem = Mock<IFileSystem>()
+  let samplePosts = [ { Title = "Post1"; MdContent = "Content1"; CreatedAt = DateTime(2020, 1, 1) } ]
+    
+  let mockRepository = 
+    Mock<IPostRepository>()
+      .Setup(fun repo -> <@ repo.parseAllMarkdownFromPostsDirectory() @>)
+      .Returns(samplePosts)
 
-  mockFileSystem.Setup(fun x -> <@ x.GetFiles "*.md" @>).Returns([|"file1.md"; "file2.md"|]) |> ignore
-  let mockDirectoryInfo = new DirectoryInfo("posts/")
-  mockFileSystem.Setup(fun x -> <@ x.DirectoryInfo "posts/" @>).Returns(mockDirectoryInfo) |> ignore
-  mockFileSystem.Setup(fun x -> <@ x.ReadAllTextAsync "file1.md" @>).Returns("mock file content") |> ignore
+  let mockLogger = Mock<ILogger<PostService>>()
 
-
-  let mockPostServiceLogger = Mock<ILogger<PostService>>()
-  let mockPostRepositoryLogger = Mock<ILogger<PostRepository>>()
-  
-  let mockPostRepository = Mock<PostRepository (mockFileSystem.Create(), mockPostRepositoryLogger.Create())> ()  
-  let service = PostService (mockPostRepository.Create(), mockLogger.Create())
+  let service = PostService(mockRepository.Create(), mockLogger.Create())
 
   // Act
   let result = service.getLatestPostHTMLContent()
-  *)
+
   // Assert
-  //Assert.IsType<string>(result)
-  Assert.True(true)
+  Assert.Contains("Content1", result)
+  Assert.Contains("<hr>", result)
+
 
 [<Fact>]
 let ``getPreviousPostHTMLContent returns string`` () =
   // Arrange
-  (*
-  let mockFileSystem = Mock<IFileSystem>()
-
-  mockFileSystem.Setup(fun x -> <@ x.GetFiles "*.md" @>).Returns([|"file1.md"; "file2.md"|]) |> ignore
-  let mockDirectoryInfo = new DirectoryInfo("posts/")
-  mockFileSystem.Setup(fun x -> <@ x.DirectoryInfo "posts/" @>).Returns(mockDirectoryInfo) |> ignore
-  mockFileSystem.Setup(fun x -> <@ x.ReadAllText "file1.md" @>).Returns("mock file content") |> ignore
+  let samplePosts = [ { Title = "Post1"; MdContent = "Content1"; CreatedAt = DateTime(2020, 1, 1) } ]
+    
+  let mockRepository = 
+    Mock<IPostRepository>()
+      .Setup(fun repo -> <@ repo.parseAllMarkdownFromPostsDirectory() @>)
+      .Returns(samplePosts)
 
   let mockLogger = Mock<ILogger<PostService>>()
 
-  let service = PostService (mockFileSystem.Create(), mockLogger.Create())
+  let service = PostService(mockRepository.Create(), mockLogger.Create())
 
   // Act
   let result = service.getPreviousPostHTMLContent 1
-*)
+
   // Assert
-  //Assert.IsType<string>(result)
-  Assert.True(true)
+  Assert.IsType<string>(result)
 
