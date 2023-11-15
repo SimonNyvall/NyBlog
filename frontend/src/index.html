@@ -1,35 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html id="html-page" lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>NyBlog</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism-tomorrow.min.css">
-
+    <link rel="stylesheet" href="css/prism.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://unpkg.com/htmx.org@1.9.8"></script>
 </head>
 <body>
-
-  <div class="header">
-    <div class="top-header">
-      <h1 class="header-text">NyBlog</h1>
+  <!--Blog-->
+  <div class="container">
+    <header class="border-bottom lh-1 py-3">
+      <div class="row flex-nowrap justify-content-between align-items-center">
+        <h3 class="text-center text-body-emphasis">NyBlog</h3>
+      </div>
+    </header>
+    <div class="nav-scroller py-1 mb-3 border-bottom">
+      <nav class="nav nav-underline justify-content-between">
+        <a class="nav-item nav-link link-body-emphasis" href="#">Home</a>
+        <a class="nav-item nav-link link-body-emphasis" href="#">LinkedIn</a>
+        <a class="nav-item nav-link link-body-emphasis" href="#">Github</a>
+        <div class="dropstart">
+          <p class="nav-link dropdown-toggle link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">Style</p>
+          <ul class="dropdown-menu">
+            <li><button id="dark-mode" class="dropdown-item" type="button">Dark</button></li>
+            <li><button id="light-mode" class="dropdown-item" type="button">Light</button></li>
+          </ul>
+        </div>
+      </nav>
     </div>
-    <div class="bottom-header">
-      <a href="#" class="left-link">Top</a>
-      <div class="right-links">
-        <a href="#" class="right-link">Github</a>
-        <a href="#" class="right-link">LinkedIn</a>
+  </div>
+  <main class="container">
+    <!--Jumbotron-->
+    <div class="p-4 p-md-4 mb-4 rounded text-body-emphasis bg-body-secondary">
+      <div class="col-lg-6 px-0">
+        <h1 class="display-4 fst-italic">Welcome to my development blog <Simon Nyvall/></h1>
+        <p class="lead my-3">This is a blog where I will post my progress in my development journey. I will post about my projects, my thoughts and my progress.</p>
+        <p class="lead mb-0"><a href="https://github.com/SimonNyvall" class="text-white fw-bold">Check me out on Github</a></p>
+      </div>
+    </div>
+    <!--Cards-->
+    <div class="row md-2">
+      <!--Card one-->
+      <div class="col-md-6">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary-emphasis">NyBlog <span class="text-success-emphasis">• F# • htmx • terraform</span></strong>
+            <h3 class="mb-0">Featured project</h3>
+            <div class="mb-1 text-body-secondary">Nov 15</div>
+            <p class="card-text mb-auto">A personal blog where I will document my learning process by writing articles, sharing code snippets, etc.</p>
+            <a href="https://github.com/SimonNyvall/NyBlog" class="icon-link gap-1 icon-link-hover stretched-link">
+              Go to project
+              <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+            </a>
+          </div>
+          <div class="col-auto d-none d-lg-block">
+            <img class="card-picture" src="https://images.unsplash.com/photo-1608306448197-e83633f1261c?q=80&w=3987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+          </div>
+        </div>
+      </div>
+      <!--Card two-->
+      <div class="col-md-6">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-primary-emphasis">Traveling-Salesman-Problem <span class="text-success-emphasis">• C++</span></strong>
+            <h3 class="mb-0">Featured project</h3>
+            <div class="mb-1 text-body-secondary">Nov 18</div>
+            <p class="card-text mb-auto">Efficient C++ solution employing a genetic algorithm to solve the Traveling Salesman Problem.</p>
+            <a href="https://github.com/SimonNyvall/Traveling-Salesman-Problem" class="icon-link gap-1 icon-link-hover stretched-link">
+              Go to project
+              <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+            </a>
+          </div>
+          <div class="col-auto d-none d-lg-block">
+            <img class="card-picture" src="https://images.unsplash.com/photo-1630514969818-94aefc42ec47?q=80&w=3987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Content-->
+    <div class="row g-5">
+      <article class="col-md-8 dynamic-content">
+        <!--Dynamic htmx content-->
+        <div hx-get="http://localhost:5021/api/posts" hx-trigger="load" hx-swap="outerHTML">
+          Posts will be loaded here
+        </div>
+      </article>
+      <!--About & Articles-->
+      <div class="col-md-4">
+        <div class="position-sticky about-section">
+          <div class="p-4 mb-3 bg-body-tertiary rounded">
+            <h4>About</h4>
+            <p class="mb-0">Welcome to my blog! 📝 I'm a passionate coder and tech enthusiast, diving deep into software development with Dotnet. Here, I'll share snippets of my projects 🖥️ and tech musings, alongside my love for music 🎶 and video games 🎮.</p>
+          </div>
+          <div class="p-4">
+            <h4 class="fst-italic">Articles</h4>
+            <ol hx-get="http://localhost:5021/api/posts/titles" hx-trigger="load" hx-swap="otherHTML">
+              Articles will be loaded here
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!--Footer--> 
+  <footer class="py-5 text-body-secondary bg-body-tertiary">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 d-flex justify-content-center align-items-center">
+        <img class="footer-picture" src="https://alchemists.io/images/projects/htmx/icon.png" alt="htmx"/>
+        <img class="footer-picture" src="https://atix.de/wp-content/uploads/Terraform-Logo-1.png" alt="terraform"/>
+        <img class="footer-picture" src="https://seeklogo.com/images/F/f-logo-602C686DBA-seeklogo.com.png" alt="f#"/>
+      </div>
+      <div class="col-md-4 text-container">
+        Thank you for visiting my blog. Crafted with the interactive power of htmx and the robustness of F#, this site represents a fusion of cutting-edge web technologies and functional programming. Delve into the source code on GitHub and explore the behind-the-scenes of my development journey.
       </div>
     </div>
   </div>
-  
-  <div class="wrapper">
-    <div hx-get="http://localhost:5021/api/posts/" hx-trigger="load" hx-swap="outerHTML">
-      Post
-    </div>
-  </div>
-
+  <p class="mb-0 mt-3 text-center">
+    <a href="#">Back to top</a>
+  </p>
+</footer>
+ 
+  <!--Scripts-->
+  <script src="dist/script.js"></script>
+  <script src="dist/prism.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
  
