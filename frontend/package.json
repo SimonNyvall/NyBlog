@@ -5,7 +5,8 @@
   "main": "dist/script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "tsc && npm run copy-prism",
+    "copy-prism": "cp ./src/scripts/prism.js ./dist",
     "start": "lite-server"
   },
   "author": "Simon Nyvall",
