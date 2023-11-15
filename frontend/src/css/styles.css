@@ -3,59 +3,46 @@ body {
   padding: 0;
 }
 
-.header {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
+.card-picture {
+  width: 200px;
+  height: 250px;
 }
 
-.top-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 150px;
-  background-color: #134334;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.about-section {
+  top: 2rem;
 }
 
-.header-text {
-  text-align: center;
-  font-size: 5rem;
-  color: #fff;
+.no-margin-bottom {
+    margin-bottom: 0 !important;
 }
 
-.bottom-header {
-  position: absolute;
-  top: 150px;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  background-color: #8f9323;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  box-sizing: border-box;
+.dynamic-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-.left-link, .right-link {
-  color: #fff;
-  text-decoration: none;
+.footer-picture {
+  margin: 0 10px; /* Adjust the value as needed for spacing */
+  width: 100px;
+  height: auto;
 }
 
-.right-links {
-  display: flex;
-  gap: 10px;
+.text-container {
+  border-left: 2px solid #ccc; /* Adjust the color as needed */
+  padding-left: 20px; /* Adjust the value as needed for spacing */
+  text-align: left; /* Aligns the text to the left */
 }
 
-.wrapper {
-  position: relative;
-  padding: 0 20px;
-  margin: 0 auto;
-  max-width: 1200px;
+/* Responsive adjustments if necessary */
+@media (max-width: 767px) {
+  .footer-picture {
+    margin-bottom: 10px; /* Adds space between stacked images on smaller screens */
+  }
+
+  .text-container {
+    border-left: none;
+    padding-left: 0;
+    padding-top: 20px;
+  }
 }
