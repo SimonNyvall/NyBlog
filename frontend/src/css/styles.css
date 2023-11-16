@@ -46,3 +46,10 @@ body {
     padding-top: 20px;
   }
 }
+
+.linkedin-picture {
+  width: 100%;
+  height: 96px;
+  object-fit: cover;
+}
+
