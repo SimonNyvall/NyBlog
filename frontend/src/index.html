@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/prism.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://unpkg.com/htmx.org@1.9.8"></script>
 </head>
 <body>
@@ -14,16 +15,19 @@
   <div class="container">
     <header class="border-bottom lh-1 py-3">
       <div class="row flex-nowrap justify-content-between align-items-center">
-        <h3 class="text-center text-body-emphasis">NyBlog</h3>
+        <h3 class="text-center text-body-emphasis">
+          <span class="slide-left">Ny</span>
+          <span class="slide-right fst-italic">Blog</span>
+        </h3>
       </div>
-    </header>
-    <div class="nav-scroller py-1 mb-3 border-bottom">
+    </header>    
+    <div class="nav-scroller py-1 mb-5 ps-5 pe-5 border-bottom">
       <nav class="nav nav-underline justify-content-between">
-        <a class="nav-item nav-link link-body-emphasis" href="#">Home</a>
-        <a class="nav-item nav-link link-body-emphasis" href="#">LinkedIn</a>
-        <a class="nav-item nav-link link-body-emphasis" href="#">Github</a>
+        <a class="nav-item nav-link link-body-emphasis" href="#">Home <i class="fa-solid fa-house"></i></a>
+        <a class="nav-item nav-link link-body-emphasis" href="https://www.linkedin.com/in/simonnyvall/">LinkedIn <i class="fa-brands fa-linkedin"></i></a>
+        <a class="nav-item nav-link link-body-emphasis" href="https://github.com/SimonNyvall">Github <i class="fa-brands fa-github"></i></a>
         <div class="dropstart">
-          <p class="nav-link dropdown-toggle link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">Style</p>
+          <p class="nav-link dropdown-toggle link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">Style <i class="fa-solid fa-palette"></i></p>
           <ul class="dropdown-menu">
             <li><button id="dark-mode" class="dropdown-item" type="button">Dark</button></li>
             <li><button id="light-mode" class="dropdown-item" type="button">Light</button></li>
@@ -34,43 +38,42 @@
   </div>
   <main class="container">
     <!--Jumbotron-->
-    <div class="p-4 p-md-4 mb-4 rounded text-body-emphasis bg-body-secondary">
-      <div class="col-lg-6 px-0">
-        <h1 class="display-4 fst-italic">Welcome to my development blog <Simon Nyvall/></h1>
-        <p class="lead my-3">This is a blog where I will post my progress in my development journey. I will post about my projects, my thoughts and my progress.</p>
-        <p class="lead mb-0"><a href="https://github.com/SimonNyvall" class="text-white fw-bold">Check me out on Github</a></p>
+    <div class="p-4 p-md-4 mb-5 rounded text-body-emphasis bg position-relative glow-boarder">
+      <div class="px-0 jumbo-text">
+        <h1 class="display-4 fst-italic text-center jumbo-text-big-color"><strong>DEVELOPMENT</strong></h1>
+        <h4 class="text-center jumbo-text-small-color"><strong>Ny <span class="fst-italic">Blog</span></strong></h4>
       </div>
     </div>
     <!--Cards-->
     <div class="row md-2">
       <!--Card one-->
       <div class="col-md-6">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="row g-0 border rounded flex-md-row mb-4 shadow-sm h-md-250 position-relative card">
           <div class="col p-4 d-flex flex-column position-static">
             <strong class="d-inline-block mb-2 text-primary-emphasis">NyBlog <span class="text-success-emphasis">• F# • htmx • terraform</span></strong>
             <h3 class="mb-0">Featured project</h3>
             <div class="mb-1 text-body-secondary">Nov 15</div>
             <p class="card-text mb-auto">A personal blog where I will document my learning process by writing articles, sharing code snippets, etc.</p>
             <a href="https://github.com/SimonNyvall/NyBlog" class="icon-link gap-1 icon-link-hover stretched-link">
-              Go to project
+              <span class="text-white"><i class="fa-brands fa-github"></i></span> Go to project
               <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
             </a>
           </div>
-          <div class="col-auto d-none d-lg-block">
+          <div class="col-auto d-none d-lg-block image-blur-container">
             <img class="card-picture" src="assets/images/dev.jpg"/>
           </div>
         </div>
       </div>
       <!--Card two-->
       <div class="col-md-6">
-        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="glow-card row g-0 border rounded flex-md-row mb-4 shadow-sm h-md-250 position-relative card">
           <div class="col p-4 d-flex flex-column position-static">
             <strong class="d-inline-block mb-2 text-primary-emphasis">Traveling-Salesman-Problem <span class="text-success-emphasis">• C++</span></strong>
             <h3 class="mb-0">Featured project</h3>
             <div class="mb-1 text-body-secondary">Nov 18</div>
             <p class="card-text mb-auto">Efficient C++ solution employing a genetic algorithm to solve the Traveling Salesman Problem.</p>
             <a href="https://github.com/SimonNyvall/Traveling-Salesman-Problem" class="icon-link gap-1 icon-link-hover stretched-link">
-              Go to project
+              <span class="text-white"><i class="fa-brands fa-github"></i></span> Go to project
               <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
             </a>
           </div>
@@ -85,7 +88,14 @@
       <article class="col-md-8 dynamic-content">
         <!--Dynamic htmx content-->
         <div hx-get="http://localhost:5021/api/posts" hx-trigger="load" hx-swap="outerHTML">
-          Posts will be loaded here
+          <div class="container">
+            <div class="row">
+              <h6 class="text-center">Loading the newest and coolest post. . .</h6>
+            </div>
+            <div class="row">
+              <img class="loading-gif" style="width: 200px;" src="https://cdn.dribbble.com/users/807926/screenshots/3629667/loadingtwo.gif" alt="Loading gif"/>
+            </div>
+          </div>
         </div>
       </article>
       <!--About & Articles-->
@@ -96,7 +106,7 @@
             <p class="mb-0">Welcome to my blog! 📝 I'm a passionate coder and tech enthusiast, diving deep into software development with Dotnet. Here, I'll share snippets of my projects 🖥️ and tech musings, alongside my love for music 🎶 and video games 🎮.</p>
           </div>
           <div>
-            <h4 class="fst-italic">Recent LinkedIn posts</h4>
+            <h4 class="fst-italic">Recent <span class="text-primary-emphasis">LinkedIn</span> posts</h4>
             <ul class="list-unstyled">
               <li> 
                 <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="https://www.linkedin.com/feed/update/urn:li:activity:7128764801945604096/?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7128764801945604096%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29">
@@ -121,7 +131,14 @@
           <div class="p-4">
             <h4 class="fst-italic">Articles</h4>
             <ol hx-get="http://localhost:5021/api/posts/titles" hx-trigger="load" hx-swap="otherHTML">
-              Articles will be loaded here
+              <div class="container">
+                <div class="row">
+                  <h6>Loading the best articles. . .</h6>
+                </div>
+                <div class="row">
+                  <img class="loading-gif" style="width: 200px;" src="https://cdn.dribbble.com/users/807926/screenshots/3629667/loadingtwo.gif" alt="loading gif"/>
+                </div>
+              </div>
             </ol>
           </div>
         </div>
@@ -151,6 +168,7 @@
   <script src="dist/script.js"></script>
   <script src="dist/prism.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
  

@@ -53,3 +53,162 @@ body {
   object-fit: cover;
 }
 
+.slide-left, .slide-right {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.slide-left {
+  animation-name: slideFromLeft;
+  transform: translateX(-100%);
+}
+
+.slide-right {
+  animation-name: slideFromRight;
+  transform: translateX(100%);
+}
+
+@keyframes slideFromLeft {
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromRight {
+  to {
+    transform: translateX(0);
+  }
+}
+
+.dynamic-content .loading-gif {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    overflow: hidden; /* This will contain the pseudo-element within the parent */
+}
+
+.image-container img {
+    display: block; /* This removes any extra space below the image */
+    width: 100%; /* Adjust as needed */
+    height: auto; /* Adjust as needed */
+}
+
+.image-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100px; /* Width of the blur effect */
+    background: linear-gradient(to right, #2c3e50 0%, transparent 100%);
+    /* Replace #2c3e50 with the color of your background */
+}
+
+.jumbotron-bg {
+  background-image: linear-gradient( to right,
+  rgba(33, 37, 41, 1) 0%, 
+  rgba(3, 0, 19, 0.9) 20%, 
+  rgba(2, 0, 15, 0.8) 40%, 
+  rgba(1, 0, 11, 0.6) 60%, 
+  rgba(1, 0, 7, 0.4) 80%, 
+  rgba(0, 0, 4, 0.2) 100%);  
+}
+
+
+
+.bg {
+  margin: 0;
+  width: 100%;
+  height: 500px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /*background-image: url(https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fi.imgur.com%2FRnwnIzX.gif&f=1&nofb=1&ipt=63d8785f5804cb4d9491af34cea9dc484a276a77ddd7ad662a1d5cc1b2056526&ipo=images);*/ 
+  
+}
+
+
+.card {
+  position: relative;
+}
+
+.card:after {
+  background: linear-gradient(transparent, mediumslateblue, transparent);
+  height: 70px;
+  width: 2px;
+  position: absolute;
+  left: -1px;
+  top: 65%;
+  content: "";
+  opacity: 0;
+  transition: top 600ms ease, opacity 600ms ease;
+}
+
+.card:hover:after {
+  top: 25%;
+  opacity: 1;
+}
+
+.jumbo-text {
+  position: absolute;
+  top: 69%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.jumbo-text-big-color {
+  color: #43a5c6;
+}
+
+.jumbo-text-small-color {
+  color: #acd7e6;
+}
+
+.glow-boarder {
+  position: relative;
+  background-image: url(../assets/images/DALL.png);
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotation {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+
+.glow-boarder::before,
+.glow-boarder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    var(--gradient-angle, 0deg),
+    #061b6c,
+    #030d34,
+    #6b51f3,
+    #030d34,
+    #061b6c
+  );
+  border-radius: inherit;
+  animation: rotation 20s linear infinite;
+}
+
+.glow-boarder::after {
+  filter: blur(3.5rem);
+}
+
+

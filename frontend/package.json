@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "htmx": "^0.0.2",
-    "htmx.org": "^1.9.8"
+    "htmx.org": "^1.9.8",
+    "sass": "^1.69.5"
   }
 }
